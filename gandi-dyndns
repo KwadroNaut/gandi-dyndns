@@ -26,6 +26,8 @@ import json
 import time
 import xmlrpclib, urllib2
 from optparse import OptionParser
+import pycurl
+from StringIO import StringIO
 
 class Logger:
     _logger = None
@@ -242,6 +244,42 @@ def get_public_ipv4_orange():
     logger.warn('failed to retrieve IPv4 from http://livebox/')
     return get_public_ipv4()
 
+def get_public_ipv4_fritz():
+    logger = Logger.get()
+
+    try:
+        storage = StringIO()
+        data = data = """ 
+        <?xml version="1.0"?> 
+        <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/" 
+          s:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"> 
+             <s:Body> 
+                   <u:GetStatusInfo xmlns:u="urn:schemas-upnp-org:service:WANIPConnection:1" />  
+                      </s:Body> 
+                  </s:Envelope>"""
+        c = pycurl.Curl() 
+        url = "http://169.254.1.1:49000/upnp/control/WANCommonIFC1"
+        c.setopt(pycurl.URL, url)
+        c.setopt(pycurl.HTTPHEADER, ['SOAPAction: urn:schemas-upnp-org:service:WANIPConnection:1#GetExternalIPAddress', 'Content-Type: text/xml; charset="utf-8"'])
+        c.setopt(pycurl.POST, 1)
+        c.setopt(pycurl.POSTFIELDS, data)
+        c.setopt(c.WRITEFUNCTION, storage.write)
+        c.perform()
+        c.close()
+        content = storage.getvalue()
+        
+        start = '<NewExternalIPAddress>'
+        end = '</NewExternalIPAddress>'
+        result = re.search('%s(.*)%s' % (start, end), content).group(1)
+        pprint(result)
+        if result:
+            return result
+    
+    except: pass
+
+    logger.warn('failed to retrieve address from fritzbox')
+    return get_public_ipv4()
+
 #
 # Caching
 #
@@ -401,6 +439,8 @@ if __name__ == '__main__':
             else:
                 if provider == 'orange':
                     address = get_public_ipv4_orange()
+                elif provider == 'fritz':
+                    address = get_public_ipv4_fritz()
                 else:
                     address = get_public_ipv4()
         elif rtype == 'AAAA': # IPv6
