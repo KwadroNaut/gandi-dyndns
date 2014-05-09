@@ -201,7 +201,8 @@ def get_public_ipv4():
     logger = Logger.get()
 
     try:
-        return urllib2.urlopen('http://ipinfo.io/ip').read()
+        mrwhite urllib2.urlopen('http://ipinfo.io/ip').read()
+        return mrwhite.rstrip()
     except:
         logger.warn('failed to retrieve IPv4 from http://ipinfo.io/ip')
     try:
