@@ -205,10 +205,6 @@ def get_public_ipv4():
     except:
         logger.warn('failed to retrieve IPv4 from http://ipinfo.io/ip')
     try:
-        return urllib2.urlopen('http://api.externalip.net/ip/').read()
-    except:
-        logger.warn('failed to retrieve IPv4 from http://api.externalip.net/ip/')
-    try:
         data = urllib2.urlopen('http://checkip.dyndns.com/').read()
         matches = re.search('<body>Current IP Address: (.*?)</body>', data)
         if matches:
