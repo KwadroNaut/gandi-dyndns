@@ -388,7 +388,7 @@ if __name__ == '__main__':
 
     # Validate Options
     if not opts.api or not opts.domain or not opts.record:
-        logger.error('you must specify -a -d and -r')
+        logger.error('you must specify --api (key), --domain and --record. Use --help for other options.')
 
     # Process
     if opts.ipv4: rtypes.append('A')
