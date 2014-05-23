@@ -26,7 +26,12 @@ import json
 import time
 import xmlrpclib, urllib2
 from optparse import OptionParser
-import pycurl
+import imp
+try:
+    imp.find_module('pycurl')
+    found = True
+except ImportError:
+    found = False
 from StringIO import StringIO
 
 class Logger:
@@ -201,7 +206,7 @@ def get_public_ipv4():
     logger = Logger.get()
 
     try:
-        mrwhite urllib2.urlopen('http://ipinfo.io/ip').read()
+        mrwhite = urllib2.urlopen('http://ipinfo.io/ip').read()
         return mrwhite.rstrip()
     except:
         logger.warn('failed to retrieve IPv4 from http://ipinfo.io/ip')
