@@ -27,7 +27,7 @@ See http://gerard.geekandfree.org/blog/2012/03/01/debarrassez-vous-de-dyndns-en-
 
 All communication is done over https.
 
-If you have a Livebox, you can specify `--provider orange` to retrieve your public IP from your box (faster, better than online services).
+If you have a Livebox, you can specify `--provider orange` to retrieve your public IP from your box (faster, better than online services). If you have a Fritzbox, you can specify `--provider fritz` to retrieve your public IP from your modem (faster, better than online services). This requires pycurl.
 
 You can turn the local cache on by appending `--cache`. This reduces api calls to gandi rpc because your domain data is not retrieved each time.
 
